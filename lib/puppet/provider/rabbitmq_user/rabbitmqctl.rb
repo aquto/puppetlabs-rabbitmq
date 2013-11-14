@@ -1,7 +1,14 @@
 require 'puppet'
 Puppet::Type.type(:rabbitmq_user).provide(:rabbitmqctl) do
 
-  commands :rabbitmqctl => 'rabbitmqctl'
+  if Puppet::PUPPETVERSION.to_f < 3
+    commands :rabbitmqctl => 'rabbitmqctl'
+  else
+     has_command(:rabbitmqctl, 'rabbitmqctl') do
+       environment :HOME => "/tmp"
+     end
+  end
+
   defaultfor :feature => :posix
 
   def self.instances
@@ -26,7 +33,7 @@ Puppet::Type.type(:rabbitmq_user).provide(:rabbitmqctl) do
   end
 
   def exists?
-    out = rabbitmqctl('list_users').split(/\n/)[1..-2].detect do |line|
+    rabbitmqctl('list_users').split(/\n/)[1..-2].detect do |line|
       line.match(/^#{Regexp.escape(resource[:name])}(\s+\S+|)$/)
     end
   end
