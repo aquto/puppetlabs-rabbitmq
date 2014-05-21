@@ -196,8 +196,8 @@ class rabbitmq::server(
 
   if $enable_management {
     exec { 'rabbitmq_management':
-      command     => "/usr/sbin/rabbitmq-plugins enable rabbitmq_management",
-      path        => ['/bin','/sbin','/usr/bin','/usr/sbin','/usr/local/bin','/usr/local/sbin','/opt/couchbase/bin'],
+      command     => "rabbitmq-plugins enable rabbitmq_management",
+      path        => ['/bin','/sbin','/usr/bin','/usr/sbin','/usr/local/bin','/usr/local/sbin','/opt/couchbase/bin', '/usr/lib/rabbitmq/bin/'],
       environment => "HOME=/root",
       refreshonly => true,
       notify      => Class['rabbitmq::service'],
